@@ -23,8 +23,8 @@
 Collision CheckCollision(Object &obj1, Object &obj2)
 {
     Vector2 d = {
-        obj2.position.x - obj1.position.x,
-        obj2.position.y - obj1.position.y,
+        abs(obj2.position.x - obj1.position.x),
+        abs(obj2.position.y - obj1.position.y),
     };
     Vector2 q = {
         d.x - (obj1.render.width + obj2.render.width) / 2,
