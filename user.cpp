@@ -22,21 +22,6 @@
 //
 Collision CheckCollision(Object &obj1, Object &obj2)
 {
-    Vector2 d = {
-        obj2.position.x - obj1.position.x,
-        obj2.position.y - obj1.position.y,
-    };
-    Vector2 q = {
-        d.x - (obj1.render.width + obj2.render.width) / 2,
-        d.y - (obj2.render.height + obj2.render.height) / 2,
-    };
-    Collision Collide{ false, { 0, 0 } };
-    if (q.x < 0 && q.y < 0) {
-        Collide.exists = true;
-        Collide.overlap.x = q.x;
-        Collide.overlap.y = q.y;
-    }
-    return Collide;
 }
 
 // Задание SolveCollision.
