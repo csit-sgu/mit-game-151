@@ -30,13 +30,13 @@ Collision CheckCollision(Object &obj1, Object &obj2)
         d.x - (obj1.render.width + obj2.render.width) / 2,
         d.y - (obj2.render.height + obj2.render.height) / 2,
     };
-    Collision Collide{ false, { 0, 0 } };
+    Collision collide{ false, { 0, 0 } };
     if (q.x < 0 && q.y < 0) {
-        Collide.exists = true;
-        Collide.overlap.x = q.x;
-        Collide.overlap.y = q.y;
+        collide.exists = true;
+        collide.overlap.x = q.x;
+        collide.overlap.y = q.y;
     }
-    return Collide;
+    return collide;
 }
 
 // Задание SolveCollision.
