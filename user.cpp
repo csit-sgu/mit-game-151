@@ -23,16 +23,18 @@
 Collision CheckCollision(Object &obj1, Object &obj2)
 {
     Vector2 d = {
-        abs(obj2.position.x - obj1.position.x),
-        abs(obj2.position.y - obj1.position.y),
+        obj2.position.x - obj1.position.x,
+        obj2.position.y - obj1.position.y,
     };
     Vector2 q = {
-        d.x - (obj1.render.width + obj2.render.width) / 2,
-        d.y - (obj2.render.height + obj2.render.height) / 2,
+        abs(d.x) - (obj1.render.width + obj2.render.width) / 2,
+        abs(d.y) - (obj2.render.height + obj2.render.height) / 2,
     };
     Collision collide{ false, { 0, 0 } };
     if (q.x < 0 && q.y < 0) {
         collide.exists = true;
+        if (d.x > 0) q.x = -q.x;
+        if (d.y > 0) q.y = -q.y;
         collide.overlap.x = q.x;
         collide.overlap.y = q.y;
     }
