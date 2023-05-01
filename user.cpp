@@ -128,8 +128,15 @@ void FixCollisions(Scene &scene, float dt)
 // Возможное решение может занимать примерно 8-9 строки.
 // Ваше решение может сильно отличаться.
 //
-void ApplyGravity(Object &obj, float dt)
+void ApplyGravity(Object& obj, float dt) 
 {
+    if (obj.physics.enabled && obj.collider.of_type(ColliderType::DYNAMIC)) 
+    {
+        obj.physics.acceleration.x += GRAVITY * dt * dt;
+        obj.physics.speed.x += obj.physics.acceleration.x;
+        if (obj.physics.speed.x > 200.0) obj.physics.speed.x = 200.0;
+        obj.position.x += obj.physics.speed.x * dt;
+    }
 }
 
 // Задание MakeJump.
