@@ -188,7 +188,7 @@ void MoveCameraTowards(Context &ctx, Object &obj, float dt)
 
 bool CheckPlayerDeath(Object &player, Scene &scene)
 {
-	for (auto object : scene) {
+	for (auto& object : scene) {
 		if (object.enemy.enabled) {
 			if (CheckCollision(player, object).exists) {
 				return true;
