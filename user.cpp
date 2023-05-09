@@ -101,6 +101,22 @@ void SolveCollision(Object &obj, Collision c, float dt)
 //
 void FixCollisions(Scene &scene, float dt)
 {
+    for (Object& obj1 : scene)
+    {
+        if (obj1.collider.enabled && 
+            obj1.collider.of_type(ColliderType::DYNAMIC))
+        {
+            for (Object& obj2 : scene)
+            {
+                if (obj1 != obj2 && obj2.collider.enabled &&
+                    (obj2.collider.of_type(ColliderType::DYNAMIC) || 
+                        obj2.collider.of_type(ColliderType::STATIC)))
+                {
+                    SolveCollision(obj1, CheckCollision(obj1, obj2), dt);
+                }
+            }
+        }
+    }
 }
 
 // Задание ApplyGravity.
