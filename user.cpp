@@ -374,8 +374,9 @@ void UpdateBullet(Context &ctx, Object &obj, float dt)
 {
     obj.bullet.position = obj.bullet.speed * dt + obj.bullet.position;
     obj.bullet.lifetime += dt;
-    if (obj.bullet.lifetime > obj.bullet.max_lifetime)
+    if (obj.bullet.lifetime > obj.bullet.max_lifetime) {
         Destroy(ctx, obj);
+    }
 
 }
 
