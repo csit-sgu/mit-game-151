@@ -305,9 +305,16 @@ void EnemyAI(Object &enemy, Scene &scene, float dt)
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void PlayerControl(Context &ctx, Object &player, float dt)
+void PlayerControl(Context& ctx, Object& player, float dt)
 {
+    if (!ctx.input_blocked) {
+        if (IsKeyDown(KEY_SPACE)) MakeJump(player, dt);
+        else if (IsKeyPressed(KEY_J)) ShootBullet(ctx, player, dt);
+        else if (IsKeyPressed(KEY_A)) player.position.x - (player.physics.speed.x * dt);
+        else if (IsKeyPressed(KEY_D)) player.position.x + (player.physics.speed.x * dt);
+    }
 }
+
 
 // Задание ShootBullet.
 //
