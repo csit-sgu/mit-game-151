@@ -308,13 +308,20 @@ void EnemyAI(Object &enemy, Scene &scene, float dt)
 void PlayerControl(Context& ctx, Object& player, float dt)
 {
     if (!ctx.input_blocked) {
-        if (IsKeyDown(KEY_SPACE)) MakeJump(player, dt);
-        else if (IsKeyPressed(KEY_J)) ShootBullet(ctx, player, dt);
-        else if (IsKeyPressed(KEY_A)) player.position.x - (player.physics.speed.x * dt);
-        else if (IsKeyPressed(KEY_D)) player.position.x + (player.physics.speed.x * dt);
+        if (IsKeyDown(KEY_SPACE)) 
+            MakeJump(player, dt);
+        else if (IsKeyPressed(KEY_J)) 
+            ShootBullet(ctx, player, dt);
+        else if (IsKeyPressed(KEY_A)) {
+            player.position.x -= (player.physics.speed.x * dt);
+            player.player.direction = Direction::LEFT;
+        }
+        else if (IsKeyPressed(KEY_D)) {
+            player.position.x += (player.physics.speed.x * dt);
+            player.player.direction = Direction::RIGHT;
+        }
     }
 }
-
 
 // Задание ShootBullet.
 //
