@@ -495,6 +495,20 @@ void DrawDeathScreen(Context &ctx)
 //
 void DrawGameOverScreen(Context &ctx)
 {
+    //RLAPI int MeasureText(const char *text, int fontSize);                              // Measure string width for default font
+    const char* GameOverText = "wasted";                                                  // Надпись о проигрыше - можно заменить на "Game over"
+    int GameOverTextWidth = MeasureText(GameOverText, 45);                                // или любую другую, если появится необходимость
+
+    MeasureText(GameOverText, GameOverTextWidth);                                         
+
+    //RLAPI void DrawRectangle(int posX, int posY, int width, int height, Color color);         // Draw a color-filled rectangle
+    DrawRectangle(0, 0, ctx.screenWidth, ctx.screenHeight, BLACK);                              // Screen with a black background (Заполняем экран на пустой черный экран)
+
+    //RLAPI void DrawText(const char *text, int posX, int posY, int fontSize, Color color)                // Draw text (using default font)
+    int posX = (ctx.screenWidth - textWidth) / 2;                                                         // Calculate the position to center the text on the screen
+    int posY = ctx.screenHeight / 2;
+
+    DrawText(GameOverText, posX, posY, 45, RED);                                                          // Draw the text in red color, like in GTA V
 }
 
 // Задание DrawFinishScreen.
