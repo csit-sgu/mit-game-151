@@ -243,6 +243,7 @@ bool CheckPlayerDeath(Object &player, Scene &scene)
 //
 bool CheckFinish(Object &player, Scene &scene)
 {
+    return true;
 }
 
 // Задание EnemyAI.
@@ -374,15 +375,15 @@ void ShootBullet(Context &ctx, Object &player, float dt)
 // Возможное решение может занимать примерно 4-5 строк.
 // Ваше решение может сильно отличаться.
 //
-void UpdateBullet(Context &ctx, Object &obj, float dt)
-{
-    obj.bullet.position = obj.bullet.speed * dt + obj.bullet.position;
-    obj.bullet.lifetime += dt;
-    if (obj.bullet.lifetime > obj.bullet.max_lifetime) {
-        Destroy(ctx, obj);
-    }
-
-}
+//void UpdateBullet(Context &ctx, Object &obj, float dt)
+//{
+//    obj.bullet.position = obj.bullet.speed * dt + obj.bullet.position;
+//    obj.bullet.lifetime += dt;
+//    if (obj.bullet.lifetime > obj.bullet.max_lifetime) {
+//        Destroy(ctx, obj);
+//    }
+//
+//}
 
 // Задание KillEnemies.
 //
@@ -433,8 +434,16 @@ void KillEnemies(Context &ctx)
 //
 // Возможное решение может занимать примерно 6-8 строк.
 //
-void ApplyOnDeath(Context &ctx, Object &obj)
-{
+
+void ApplyOnDeath(Context &ctx, Object &obj) {
+    Sound sound;
+    if (obj.player.enabled) { 
+        sound = LoadSound("Assets/Sounds/death.mp3");
+    }
+    else if (obj.enemy.enabled) { 
+        sound = LoadSound("Assets/Sounds/enemy_death.mp3");
+    }
+    PlaySound(sound); 
 }
 
 // Задание ApplyOnSpawn.
