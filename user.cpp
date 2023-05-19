@@ -459,9 +459,9 @@ void ApplyOnDeath(Context &ctx, Object &obj)
 //
 void ApplyOnSpawn(Context &ctx, Object &obj)
 {
-     if (obj.bullet.enabled){
-        LoadSound(ctx, "shot1.mp3");
-        ctx.PlaySound("shot1.mp3");
+     if (obj.bullet.enabled) {
+        Sound shotSound = LoadSound(ctx, "shot1.mp3");
+        PlaySound(shotSound);
     }
 }
 
