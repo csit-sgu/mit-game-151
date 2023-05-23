@@ -408,6 +408,24 @@ void UpdateBullet(Context &ctx, Object &obj, float dt)
 //
 void KillEnemies(Context &ctx)
 {
+    for (auto& subject : ctx.current_scene)
+    {
+        if (subject.enemy.enabled)
+        {
+            for (auto& object : ctx.current_scene)
+            {
+                if (object.bullet.enabled)
+                {
+                    if (CheckCollision(subject, object).exists)
+                    {
+                        ApplyOnDeath(ctx, subject);
+                        Destroy(ctx, object);
+                        Destroy(ctx, subject);
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Задание ApplyOnDeath.
