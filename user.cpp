@@ -310,7 +310,7 @@ void PlayerControl(Context& ctx, Object& player, float dt)
     if (!ctx.input_blocked) {
         if (IsKeyDown(KEY_SPACE)) 
             MakeJump(player, dt);
-        if (IsKeyDown(KEY_J)) 
+        if (IsKeyPressed(KEY_J)) 
             ShootBullet(ctx, player, dt);
         if (IsKeyDown(KEY_A)) {
             player.position.x -= (player.player.speed * dt);
