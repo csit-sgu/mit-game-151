@@ -460,7 +460,7 @@ void ApplyOnDeath(Context &ctx, Object &obj)
 void ApplyOnSpawn(Context &ctx, Object &obj)
 {
      if (obj.bullet.enabled) {
-        Sound shotSound = LoadSound(ctx, "shot1.mp3");
+        Sound shotSound = LoadSound(ctx, "Assets/Sounds/shot1.mp3");
         PlaySound(shotSound);
     }
 }
