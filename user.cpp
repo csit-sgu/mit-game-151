@@ -27,8 +27,8 @@ Collision CheckCollision(Object &obj1, Object &obj2)
         obj2.position.y - obj1.position.y,
     };
     Vector2 q = {
-        abs(d.x) - (obj1.render.width + obj2.render.width) / 2,
-        abs(d.y) - (obj2.render.height + obj2.render.height) / 2,
+        abs(d.x) - (obj1.collider.width + obj2.collider.width) / 2,
+        abs(d.y) - (obj1.collider.height + obj2.collider.height) / 2,
     };
     Collision collide{ false, { 0, 0 } };
     if (q.x < 0 && q.y < 0) {
