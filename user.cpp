@@ -545,6 +545,15 @@ void DrawFinishScreen(Context &ctx)
 //
 void DrawMainScreen(Context &ctx)
 {
+    const char* greeting = "HEY!";
+    DrawText(greeting, ctx.screen_size.x / 2 - MeasureText(greeting, 40) / 2,
+        ctx.screen_size.y / 3, 40, VIOLET);
+
+    const char* text = "Let's go on an adventure!";
+    DrawText(text, ctx.screen_size.x / 2 - MeasureText(text, 30) / 2, 
+        ctx.screen_size.y * 5 / 12, 30, PURPLE);
+
+    DrawText("ABOBA", 0, 0, 15, DARKPURPLE);
 }
 
 // Задание ConstructMenuScene.
