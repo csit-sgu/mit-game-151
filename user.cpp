@@ -537,7 +537,7 @@ void DrawFinishScreen(Context &ctx)
     int point_x = ctx.screen_size.x;
     int point_y = ctx.screen_size.y;
 
-    DrawRectangle(point_x / 4, point_y / 3, point_x / 2, point_y / 3, BLACK);
+    DrawRectangle(point_x / 4, point_y / 4, point_x / 2, point_y / 3, BLACK);
     DrawText(finish_text_message, point_x / 2 - inscription_size / 2, point_y / 3, 60, GREEN);
 }
 
