@@ -531,14 +531,19 @@ void DrawGameOverScreen(Context &ctx)
 //
 void DrawFinishScreen(Context &ctx)
 {
-    const char* finish_text_message = "WON!";
+    const char *finish_text_message = "WON!";
+    const char *play_again = "clik ENTER to play again";
 
     int inscription_size = MeasureText(finish_text_message, 60);
+    int play_again_size = MeasureText(play_again, 30);
     int point_x = ctx.screen_size.x;
     int point_y = ctx.screen_size.y;
 
     DrawRectangle(point_x / 4, point_y / 4, point_x / 2, point_y / 3, BLACK);
-    DrawText(finish_text_message, point_x / 2 - inscription_size / 2, point_y / 3, 60, GREEN);
+    DrawText(finish_text_message, point_x / 2 - inscription_size / 2,
+    point_y / 3, 60, GREEN);
+    DrawText(play_again, point_x / 2 - play_again_size / 2,
+    point_y / 2, 30, BLUE);
 }
 
 // Задание DrawMainScreen.
