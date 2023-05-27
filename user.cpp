@@ -541,9 +541,9 @@ void DrawFinishScreen(Context &ctx)
 
     DrawRectangle(point_x / 4, point_y / 4, point_x / 2, point_y / 3, BLACK);
     DrawText(finish_text_message, point_x / 2 - inscription_size / 2,
-	point_y / 3, 60, GREEN);
+        point_y / 3, 60, GREEN);
     DrawText(play_again, point_x / 2 - play_again_size / 2,
-   	point_y / 2, 30, BLUE);
+        point_y / 2, 30, BLUE);
 }
 
 // Задание DrawMainScreen.
