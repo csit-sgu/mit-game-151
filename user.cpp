@@ -451,7 +451,8 @@ void KillEnemies(Context &ctx)
 //
 // Возможное решение может занимать примерно 6-8 строк.
 //
-void ApplyOnDeath(Context &ctx, Object &obj) {
+void ApplyOnDeath(Context &ctx, Object &obj) 
+{
     Sound sound;
     if (obj.player.enabled) { 
         sound = LoadSound("Assets/Sounds/death.mp3");
