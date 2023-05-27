@@ -532,7 +532,7 @@ void DrawGameOverScreen(Context &ctx)
 void DrawFinishScreen(Context &ctx)
 {
     const char *finish_text_message = "WON!";
-    const char *play_again = "clik ENTER to play again";
+    const char *play_again = "click ENTER to play again";
 
     int inscription_size = MeasureText(finish_text_message, 60);
     int play_again_size = MeasureText(play_again, 30);
