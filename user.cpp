@@ -275,6 +275,13 @@ bool CheckFinish(Object &player, Scene &scene)
 //
 void EnemyAI(Object &enemy, Scene &scene, float dt)
 {
+	Object &player = *find_player(scene);
+    	float dx = player.position.x - enemy.position.x;
+    	float move = enemy.enemy.speed * dt;
+    	if (dx > 0) 
+        	enemy.position.x += move;
+    	else
+        	enemy.position.x -= move;
 }
 
 // Задание PlayerControl.
