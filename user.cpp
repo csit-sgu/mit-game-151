@@ -150,9 +150,9 @@ void ApplyGravity(Object &obj, float dt)
     {
         obj.physics.acceleration.y -= GRAVITY * dt * dt;
         obj.physics.speed.y += obj.physics.acceleration.y;
-		if (obj.physics.speed.y < MAX_FALLING_SPEED) {
-			obj.physics.speed.y = MAX_FALLING_SPEED;
-		}
+        if (obj.physics.speed.y < MAX_FALLING_SPEED) {
+            obj.physics.speed.y = MAX_FALLING_SPEED;
+        }
         obj.position.y += obj.physics.speed.y * dt;
     }
 }
