@@ -609,6 +609,116 @@ void DrawMainScreen(Context &ctx)
 //
 void ConstructMenuScene(Context &ctx, Scene &game_scene)
 {
+    Object bg = Object();
+
+    bg.render = Render(ctx, "Assets/background_layer_1.png", ctx.screen_size);
+    game_scene.push_back(bg);
+    bg.render = Render(ctx, "Assets/background_layer_2.png", ctx.screen_size);
+    game_scene.push_back(bg);
+    bg.render = Render(ctx, "Assets/background_layer_3.png", ctx.screen_size);
+    game_scene.push_back(bg);
+
+
+    bg.render = Render(ctx, "Assets/cliff.png", { ctx.screen_size.x / 5,
+        ctx.screen_size.y / 8 });
+    bg.position = { -((ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT),
+        -(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT };
+    game_scene.push_back(bg);
+
+    float height_cliff = bg.render.height / PIXEL_PER_UNIT;
+
+    for (int i = 1; i < 5; i++) {
+        bg.render = Render(ctx, "Assets/road.png", { ctx.screen_size.x / 5,
+            ctx.screen_size.y / 14 });
+        bg.position = { -((ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT - i * bg.render.width / PIXEL_PER_UNIT),
+            -(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT };
+        game_scene.push_back(bg);
+    }
+
+    float height_road = bg.render.height / PIXEL_PER_UNIT;
+
+    bg.render = Render(ctx, "Assets/black.png", { ctx.screen_size.x / 2,
+        ctx.screen_size.y / 6 });
+    bg.position = { 0, ctx.screen_size.y / 10 / PIXEL_PER_UNIT };
+    game_scene.push_back(bg);
+
+    float height_black = bg.render.height / PIXEL_PER_UNIT;
+
+
+    bg.render = Render(ctx, "Assets/shop.png", { ctx.screen_size.x / 4,
+        ctx.screen_size.y / 3 });
+    bg.position = { (ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT,
+        -(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT + height_road };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/lamp.png", { ctx.screen_size.x / 23,
+        ctx.screen_size.y / 6 });
+    bg.position = { ctx.screen_size.x / 5 / PIXEL_PER_UNIT,
+        -(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT + height_road };
+    game_scene.push_back(bg);
+
+
+    bg.render = Render(ctx, "Assets/warrior1_running.png", { ctx.screen_size.x / 12,
+        ctx.screen_size.y / 8 });
+    bg.position = { ctx.screen_size.x / 9 / PIXEL_PER_UNIT,
+        -(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT + height_road };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/warrior2.png", { ctx.screen_size.x / 10,
+        ctx.screen_size.y / 6 });
+    bg.position = { 0,
+        (ctx.screen_size.y / 10 + bg.render.height / 2) / PIXEL_PER_UNIT + height_black / 2 };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/archer.png", { ctx.screen_size.x / 9,
+        ctx.screen_size.y / 7 });
+    bg.position = { ctx.screen_size.x / 5 / PIXEL_PER_UNIT,
+        (ctx.screen_size.y / 10 + bg.render.height / 2) / PIXEL_PER_UNIT + height_black / 2 };
+    game_scene.push_back(bg);
+
+
+    bg.render = Render(ctx, "Assets/you.png", { ctx.screen_size.x / 15,
+        ctx.screen_size.y / 25 });
+    bg.position = { ctx.screen_size.x / 9 / PIXEL_PER_UNIT,
+        -ctx.screen_size.y / 5 / PIXEL_PER_UNIT };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/arrow.png", { ctx.screen_size.x / 15,
+        ctx.screen_size.y / 12 });
+    bg.position = { ctx.screen_size.x / 9 / PIXEL_PER_UNIT,
+        -ctx.screen_size.y / 4 / PIXEL_PER_UNIT };
+    game_scene.push_back(bg);
+
+
+    bg.render = Render(ctx, "Assets/demon1_left.png", { ctx.screen_size.x / 5,
+        ctx.screen_size.y / 4 });
+    bg.position = { -(ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT,
+        (ctx.screen_size.y / 4 - bg.render.height / 2) / PIXEL_PER_UNIT };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/demon1_right.png", { ctx.screen_size.x / 5,
+        ctx.screen_size.y / 6 });
+    bg.position = { (ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT,
+        (ctx.screen_size.y / 3 - bg.render.height / 2) / PIXEL_PER_UNIT };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/demon1_attack.png", { ctx.screen_size.x / 3,
+        ctx.screen_size.y / 3 });
+    bg.position = { -ctx.screen_size.x / 8 / PIXEL_PER_UNIT,
+        -(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT + height_road };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/demon2_attack.png", { ctx.screen_size.x / 6,
+        ctx.screen_size.y / 4 });
+    bg.position = { -ctx.screen_size.x / 6 / PIXEL_PER_UNIT,
+        (ctx.screen_size.y / 10 + bg.render.height / 2) / PIXEL_PER_UNIT + height_black / 2 };
+    game_scene.push_back(bg);
+
+    bg.render = Render(ctx, "Assets/wizard(bad).png", { ctx.screen_size.x / 9,
+        ctx.screen_size.y / 4 });
+    bg.position = { -(ctx.screen_size.x) / 3 / PIXEL_PER_UNIT,
+        -(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT + height_cliff };
+    game_scene.push_back(bg);
 }
 
 // Задание DrawStatus.
