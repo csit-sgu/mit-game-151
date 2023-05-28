@@ -243,6 +243,14 @@ bool CheckPlayerDeath(Object &player, Scene &scene)
 //
 bool CheckFinish(Object &player, Scene &scene)
 {
+    for (auto& obj : scene) {
+        if (obj.finish.enabled) {
+            if (CheckCollision(obj, player).exists) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 // Задание EnemyAI.
