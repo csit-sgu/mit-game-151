@@ -540,7 +540,6 @@ void DrawDeathScreen(Context &ctx)
 void DrawGameOverScreen(Context &ctx)
 {
     int screenHeight = 1920, screeenWidth = 1080;
-
     const char* GameOverText = "wasted";
     int GameOverTextWidth = MeasureText(GameOverText, 45);
 
