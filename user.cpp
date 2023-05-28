@@ -148,9 +148,11 @@ void ApplyGravity(Object &obj, float dt)
 {
     if (obj.physics.enabled && obj.collider.of_type(ColliderType::DYNAMIC))
     {
-        obj.physics.acceleration.y += GRAVITY * dt * dt;
+        obj.physics.acceleration.y -= GRAVITY * dt * dt;
         obj.physics.speed.y += obj.physics.acceleration.y;
-        if (obj.physics.speed.y < -200.0) obj.physics.speed.y = -200.0;
+		if (obj.physics.speed.y < MAX_FALLING_SPEED) {
+			obj.physics.speed.y = MAX_FALLING_SPEED;
+		}
         obj.position.y += obj.physics.speed.y * dt;
     }
 }
