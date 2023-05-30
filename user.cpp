@@ -564,6 +564,21 @@ void DrawDeathScreen(Context &ctx)
 //
 void DrawGameOverScreen(Context &ctx)
 {
+    const char* GameOverText = "wasted";
+    int GameOverTextWidth = MeasureText(GameOverText, 45);
+
+    // Measure string width for default font
+    MeasureText(GameOverText, GameOverTextWidth);
+
+    // Draw a color-filled rectangle (with a black background)
+    DrawRectangle(0, 0, ctx.screen_size.x, ctx.screen_size.y, BLACK);
+
+    // Calculate the position to center the text on the screen
+    int posX = (ctx.screen_size.x - GameOverTextWidth) / 2;
+    int posY = ctx.screen_size.y / 2;
+
+    // Draw the text in red color
+    DrawText(GameOverText, posX, posY, 45, RED);
 }
 
 // Задание DrawFinishScreen.
