@@ -63,9 +63,32 @@ Collision CheckCollision(Object &obj1, Object &obj2)
 //
 void SolveCollision(Object &obj, Collision c, float dt)
 {
+        if(c.exists == true){
+            if((std::abs(c.overlap.x)) > (std::abs(c.overlap.y)))  
+            { 
+                if(c.overlap.x < 0)
+                    obj.position.x = obj.position.x - c.overlap.x;
+                else 
+                    obj.position.x = obj.position.x + c.overlap.x;
+            }
+            else
+            {
+                if(c.overlap.y < 0)
+                {
+                    obj.position.y = obj.position.y + c.overlap.y;
+                    obj.physics.acceleration.y = 0;
+                    if( obj.physics.speed.y < 0)
+                        obj.physics.can_jump = true;
+                    obj.physics.speed.y = 0;
+                }
+                else 
+                    obj.position.y = obj.position.y - c.overlap.y;
+                    obj.physics.speed.y = 0;
+            }            
+        }
 }
 
-// Задание FixCollisions.
+// FixCollisions.
 //
 // Эта функция находит и решает все коллизии нашего игрового мира. Делает она
 // это, попарно перебирая все объекты.
