@@ -842,4 +842,46 @@ void ConstructMenuScene(Context &ctx, Scene &game_scene)
 //
 void DrawStatus(Context &ctx)
 {
+    Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
+    int int_min = ctx.time / 60000;
+    int int_sec = (ctx.time / 1000) - int_min*60;
+    int min_posx = 755;
+    int rectanglewidth = 50;
+
+    if(int_min >= 10)
+    {
+        min_posx -= 10;
+        rectanglewidth += 10;
+    }
+    if(int_min >= 100)
+    {
+        min_posx -= 10;
+        rectanglewidth += 10;
+    }
+    char min[3];
+    itoa(int_min, min, 10);
+    char sec[3];
+    itoa(int_sec, sec, 10);
+    DrawRectangle(min_posx-5, 0, rectanglewidth, 25, BLACK);
+    DrawText(min, min_posx, 5, 20, BLUE);
+    DrawText(":", 770, 5, 20, BLUE);
+    DrawText(sec, 775, 5, 20, BLUE);
+
+    int score_rectw = 82;
+    char score[3];
+    itoa(ctx.score, score, 10);
+    if(ctx.score >= 10)
+        score_rectw += 10;
+    if(ctx.score >= 100)
+        score_rectw += 10;
+    DrawRectangle(37, 0, score_rectw, 25, BLACK);
+    DrawText("Score:", 40, 5, 20, BLUE);
+    DrawText(score, 106, 5, 20, BLUE);
+
+    if(ctx.lives >= 1)
+        DrawTexture(heart_texture, 5, 5, WHITE);
+    if(ctx.lives >= 2)
+        DrawTexture(heart_texture, 5, 35, WHITE);
+    if(ctx.lives >= 3)
+        DrawTexture(heart_texture, 5, 65, WHITE);
 }
