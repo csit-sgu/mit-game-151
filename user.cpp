@@ -842,4 +842,35 @@ void ConstructMenuScene(Context &ctx, Scene &game_scene)
 //
 void DrawStatus(Context &ctx)
 {
+    Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
+    int int_min = ctx.time / 60000;
+    int int_sec = (ctx.time / 1000) - int_min*60;
+    int rectanglposX = ctx.screen_size.x-60;
+    int rectanglewidth = 60;
+    int score_rectw = 82;
+
+    if (int_min > 9)
+    {
+        rectanglposX -= 5;
+        rectanglewidth += 5;
+    }
+
+    if (ctx.score >= 10)
+        score_rectw += 10;
+    if (ctx.score >= 100)
+        score_rectw += 10;
+
+    DrawRectangle(37, 0, score_rectw, 25, BLACK);
+    DrawRectangle(rectanglposX, 0, rectanglewidth, 25, BLACK);
+    std::string time = std::to_string(int_min) + ':' + std::to_string(int_sec);
+    std::string score = "Score:" + std::to_string(ctx.score);
+    DrawText(score, 40, 5, 20, BLUE);
+    DrawText(time, ctx.screen_size.x-55, 5, 20, BLUE);
+
+    int heartposY = 5;
+    for(int i = 0;i < ctx.lives;i++)
+    {
+        DrawTexture(heart_texture, 5, heartposY, WHITE);
+        heartposY += 30;
+    }
 }
