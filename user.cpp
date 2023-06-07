@@ -63,6 +63,27 @@ Collision CheckCollision(Object &obj1, Object &obj2)
 //
 void SolveCollision(Object &obj, Collision c, float dt)
 {
+        if (c.exists)
+    {
+        if (std::abs(c.overlap.x) < std::abs(c.overlap.y))
+            obj.position.x -= c.overlap.x;
+        else
+        {
+            obj.position.y -= c.overlap.y;
+            if (c.overlap.y < 0)
+            {
+                obj.physics.acceleration = Vector2 {0, 0};
+                if (obj.physics.speed.y < 0)
+                {
+                    obj.physics.speed.y = 0;
+                    obj.physics.can_jump = true;
+                }
+            }
+            if (c.overlap.y > 0)
+                obj.physics.speed.y = 0;
+        }
+    }
+
 }
 
 // Задание FixCollisions.
@@ -175,7 +196,7 @@ void ApplyGravity(Object &obj, float dt)
 void MakeJump(Object &obj, float dt)
 {
     if (obj.physics.can_jump) {
-        obj.physics.speed.y = 50;
+        obj.physics.speed.y = 30;
         obj.physics.can_jump = false;
     }
 }
@@ -199,6 +220,13 @@ void MakeJump(Object &obj, float dt)
 //
 void MoveCameraTowards(Context &ctx, Object &obj, float dt)
 {
+    Vector2 camera_delta = obj.position - ctx.camera_pos;
+    float len = Vector2Length(camera_delta);
+    if (len != 0) {
+        float coeff = std::min(1.0f, CAMERA_SPEED / len * dt);
+        camera_delta *= coeff;
+        ctx.camera_pos += camera_delta;
+    } 
 }
 
 // Задание CheckPlayerDeath.
