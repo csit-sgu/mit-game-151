@@ -574,20 +574,20 @@ void ApplyOnSpawn(Context &ctx, Object &obj)
 //
 void DrawDeathScreen(Context &ctx)
 {
-if (CheckPlayerDeath(player, scene))
-    {
-        const char* DeathText = "YOU DIED";
-        int DeathTextWidth = MeasureText(DeathText, 45);
+	if (CheckPlayerDeath(player, scene))
+	{
+		const char* DeathText = "YOU DIED";
+		int DeathTextWidth = MeasureText(DeathText, 45);
 
-        MeasureText(DeathText, DeathTextWidth);
+		MeasureText(DeathText, DeathTextWidth);
 
-        DrawRectangle(0, 0, ctx.screen_size.x, ctx.screen_size.y, BLACK);
+		DrawRectangle(0, 0, ctx.screen_size.x, ctx.screen_size.y, BLACK);
 
-        int posX = (ctx.screen_size.x - DeathTextWidth) / 2;
-        int posY = ctx.screen_size.y / 2;
+		int posX = (ctx.screen_size.x - DeathTextWidth) / 2;
+		int posY = ctx.screen_size.y / 2;
 
-        DrawText(DeathText, posX, posY, 45, RED);
-    }
+		DrawText(DeathText, posX, posY, 45, RED);
+	}
 }
 
 // Задание DrawGameOverScreen.
