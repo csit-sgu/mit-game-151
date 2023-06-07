@@ -574,7 +574,7 @@ void ApplyOnSpawn(Context &ctx, Object &obj)
 //
 void DrawDeathScreen(Context &ctx)
 {
-	if (CheckPlayerDeath(player, scene))
+if (CheckPlayerDeath(player, scene))
     {
         const char* DeathText = "YOU DIED";
         int DeathTextWidth = MeasureText(DeathText, 45);
