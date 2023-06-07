@@ -14,7 +14,7 @@
 const int PIXEL_PER_UNIT = 30;
 const float GRAVITY = 90.0f;
 const float MAX_FALLING_SPEED = -200.0f;
-const float CAMERA_SPEED = 30.0f;
+const float CAMERA_SPEED = 8.0f;
 
 struct Object;
 struct Render;
