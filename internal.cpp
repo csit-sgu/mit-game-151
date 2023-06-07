@@ -162,7 +162,10 @@ void CreateObjectFromChar(
             Object player = Object();
             player.position = Vector2 {col, row} * scale_factor;
             player.player = Player(10);
-            player.render = Render(ctx, "Assets/player.png");
+            player.render = Render(
+                ctx, "Assets/player.png",
+                Vector2{ PIXEL_PER_UNIT, PIXEL_PER_UNIT } * scale_factor
+            );
             player.collider = Collider(player.render, {ColliderType::DYNAMIC});
             player.physics.enabled = true;
             player.physics.mass = 60;

@@ -27,8 +27,8 @@ Collision CheckCollision(Object &obj1, Object &obj2)
         obj2.position.y - obj1.position.y,
     };
     Vector2 q = {
-        abs(d.x) - (obj1.render.width + obj2.render.width) / 2,
-        abs(d.y) - (obj2.render.height + obj2.render.height) / 2,
+        abs(d.x) - (obj1.collider.width + obj2.collider.width) / 2,
+        abs(d.y) - (obj1.collider.height + obj2.collider.height) / 2,
     };
     Collision collide{ false, { 0, 0 } };
     if (q.x < 0 && q.y < 0) {
@@ -169,9 +169,11 @@ void ApplyGravity(Object &obj, float dt)
 {
     if (obj.physics.enabled && obj.collider.of_type(ColliderType::DYNAMIC))
     {
-        obj.physics.acceleration.y += GRAVITY * dt * dt;
+        obj.physics.acceleration.y -= GRAVITY * dt * dt;
         obj.physics.speed.y += obj.physics.acceleration.y;
-        if (obj.physics.speed.y < -200.0) obj.physics.speed.y = -200.0;
+        if (obj.physics.speed.y < MAX_FALLING_SPEED) {
+            obj.physics.speed.y = MAX_FALLING_SPEED;
+        }
         obj.position.y += obj.physics.speed.y * dt;
     }
 }
@@ -194,7 +196,7 @@ void ApplyGravity(Object &obj, float dt)
 void MakeJump(Object &obj, float dt)
 {
     if (obj.physics.can_jump) {
-        obj.physics.speed.y = 50;
+        obj.physics.speed.y = 30;
         obj.physics.can_jump = false;
     }
 }
@@ -218,6 +220,13 @@ void MakeJump(Object &obj, float dt)
 //
 void MoveCameraTowards(Context &ctx, Object &obj, float dt)
 {
+    Vector2 camera_delta = obj.position - ctx.camera_pos;
+    float len = Vector2Length(camera_delta);
+    if (len != 0) {
+        float coeff = std::min(1.0f, CAMERA_SPEED / len * dt);
+        camera_delta *= coeff;
+        ctx.camera_pos += camera_delta;
+    } 
 }
 
 // Задание CheckPlayerDeath.
@@ -264,6 +273,14 @@ bool CheckPlayerDeath(Object &player, Scene &scene)
 //
 bool CheckFinish(Object &player, Scene &scene)
 {
+    for (auto& obj : scene) {
+        if (obj.finish.enabled) {
+            if (CheckCollision(obj, player).exists) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 // Задание EnemyAI.
@@ -296,6 +313,13 @@ bool CheckFinish(Object &player, Scene &scene)
 //
 void EnemyAI(Object &enemy, Scene &scene, float dt)
 {
+	Object &player = *find_player(scene);
+    	float dx = player.position.x - enemy.position.x;
+    	float move = enemy.enemy.speed * dt;
+    	if (dx > 0)
+            enemy.position.x += move;
+    	else
+            enemy.position.x -= move;
 }
 
 // Задание PlayerControl.
@@ -326,8 +350,22 @@ void EnemyAI(Object &enemy, Scene &scene, float dt)
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void PlayerControl(Context &ctx, Object &player, float dt)
+void PlayerControl(Context& ctx, Object& player, float dt)
 {
+    if (!ctx.input_blocked) {
+        if (IsKeyDown(KEY_SPACE)) 
+            MakeJump(player, dt);
+        if (IsKeyPressed(KEY_J)) 
+            ShootBullet(ctx, player, dt);
+        if (IsKeyDown(KEY_A)) {
+            player.position.x -= (player.player.speed * dt);
+            player.player.direction = Direction::LEFT;
+        }
+        if (IsKeyDown(KEY_D)) {
+            player.position.x += (player.player.speed * dt);
+            player.player.direction = Direction::RIGHT;
+        }
+    }
 }
 
 // Задание ShootBullet.
@@ -369,6 +407,14 @@ void PlayerControl(Context &ctx, Object &player, float dt)
 //
 void ShootBullet(Context &ctx, Object &player, float dt)
 {
+    Object bullet = Object();
+    bullet.position = player.position;
+    bullet.render = Render(ctx, "Assets/bullet.png");
+    bullet.collider = Collider(bullet.render, {ColliderType::EVENT});
+    bullet.bullet = Bullet({20, 0}, 5);
+    if (player.player.direction == Direction::LEFT)
+        bullet.bullet.speed.x *= -1;
+    Spawn(ctx, bullet);
 }
 
 // Задание UpdateBullet.
@@ -472,8 +518,16 @@ void KillEnemies(Context &ctx)
 //
 // Возможное решение может занимать примерно 6-8 строк.
 //
-void ApplyOnDeath(Context &ctx, Object &obj)
+void ApplyOnDeath(Context &ctx, Object &obj) 
 {
+    Sound sound;
+    if (obj.player.enabled) { 
+        sound = LoadSound("Assets/Sounds/death.mp3");
+    }
+    else if (obj.enemy.enabled) { 
+        sound = LoadSound("Assets/Sounds/enemy_death.mp3");
+    }
+    PlaySound(sound); 
 }
 
 // Задание ApplyOnSpawn.
@@ -498,6 +552,10 @@ void ApplyOnDeath(Context &ctx, Object &obj)
 //
 void ApplyOnSpawn(Context &ctx, Object &obj)
 {
+     if (obj.bullet.enabled) {
+        Sound shotSound = LoadSound("Assets/Sounds/shot1.mp3");
+        PlaySound(shotSound);
+    }
 }
 
 // Задание DrawDeathScreen.
@@ -534,6 +592,21 @@ void DrawDeathScreen(Context &ctx)
 //
 void DrawGameOverScreen(Context &ctx)
 {
+    const char* GameOverText = "wasted";
+    int GameOverTextWidth = MeasureText(GameOverText, 45);
+
+    // Measure string width for default font
+    MeasureText(GameOverText, GameOverTextWidth);
+
+    // Draw a color-filled rectangle (with a black background)
+    DrawRectangle(0, 0, ctx.screen_size.x, ctx.screen_size.y, BLACK);
+
+    // Calculate the position to center the text on the screen
+    int posX = (ctx.screen_size.x - GameOverTextWidth) / 2;
+    int posY = ctx.screen_size.y / 2;
+
+    // Draw the text in red color
+    DrawText(GameOverText, posX, posY, 45, RED);
 }
 
 // Задание DrawFinishScreen.
@@ -552,6 +625,19 @@ void DrawGameOverScreen(Context &ctx)
 //
 void DrawFinishScreen(Context &ctx)
 {
+    const char *finish_text_message = "WON!";
+    const char *play_again = "click ENTER to play again";
+
+    int inscription_size = MeasureText(finish_text_message, 60);
+    int play_again_size = MeasureText(play_again, 30);
+    int point_x = ctx.screen_size.x;
+    int point_y = ctx.screen_size.y;
+
+    DrawRectangle(point_x / 4, point_y / 4, point_x / 2, point_y / 3, BLACK);
+    DrawText(finish_text_message, point_x / 2 - inscription_size / 2,
+        point_y / 3, 60, GREEN);
+    DrawText(play_again, point_x / 2 - play_again_size / 2,
+        point_y / 2, 30, BLUE);
 }
 
 // Задание DrawMainScreen.
@@ -566,6 +652,17 @@ void DrawFinishScreen(Context &ctx)
 //
 void DrawMainScreen(Context &ctx)
 {
+    const char *greeting = "HEY!";
+    float greeting_width = MeasureText(greeting, 40);
+    DrawText(greeting, ctx.screen_size.x / 2 - greeting_width / 2,
+        ctx.screen_size.y / 3, 40, VIOLET);
+
+    const char *text = "Let's go on an adventure!";
+    float text_width = MeasureText(text, 30);
+    DrawText(text, ctx.screen_size.x / 2 - text_width / 2,
+        ctx.screen_size.y * 5 / 12, 30, PURPLE);
+
+    DrawText("ABOBA", 0, 0, 15, DARKPURPLE);
 }
 
 // Задание ConstructMenuScene.
@@ -593,6 +690,156 @@ void DrawMainScreen(Context &ctx)
 //
 void ConstructMenuScene(Context &ctx, Scene &game_scene)
 {
+	Object bg = Object();
+
+	bg.render = Render(ctx, "Assets/background_layer_1.png", ctx.screen_size);
+	game_scene.push_back(bg);
+	bg.render = Render(ctx, "Assets/background_layer_2.png", ctx.screen_size);
+	game_scene.push_back(bg);
+	bg.render = Render(ctx, "Assets/background_layer_3.png", ctx.screen_size);
+	game_scene.push_back(bg);
+
+
+	bg.render = Render(ctx, "Assets/cliff.png",
+		{ ctx.screen_size.x / 5, ctx.screen_size.y / 8 });
+	bg.position = {
+		-((ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT),
+		-(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT
+	};
+	game_scene.push_back(bg);
+
+	float height_cliff = bg.render.height / PIXEL_PER_UNIT;
+
+	for (int i = 1; i < 5; i++) {
+		bg.render = Render(ctx, "Assets/road.png",
+			{ ctx.screen_size.x / 5, ctx.screen_size.y / 14 });
+		bg.position = {
+			-((ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT
+				- i * bg.render.width / PIXEL_PER_UNIT),
+			-(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT
+		};
+		game_scene.push_back(bg);
+	}
+
+	float height_road = bg.render.height / PIXEL_PER_UNIT;
+
+	bg.render = Render(ctx, "Assets/black.png",
+		{ ctx.screen_size.x / 2, ctx.screen_size.y / 6 });
+	bg.position = {
+		0,
+		ctx.screen_size.y / 10 / PIXEL_PER_UNIT
+	};
+	game_scene.push_back(bg);
+
+	float height_black = bg.render.height / PIXEL_PER_UNIT;
+
+
+	bg.render = Render(ctx, "Assets/shop.png",
+		{ ctx.screen_size.x / 4, ctx.screen_size.y / 3 });
+	bg.position = {
+		(ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT,
+		-(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT
+			+ height_road
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/lamp.png",
+		{ ctx.screen_size.x / 23, ctx.screen_size.y / 6 });
+	bg.position = {
+		ctx.screen_size.x / 5 / PIXEL_PER_UNIT,
+		-(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT
+			+ height_road
+	};
+	game_scene.push_back(bg);
+
+
+	bg.render = Render(ctx, "Assets/warrior1_running.png",
+		{ ctx.screen_size.x / 12, ctx.screen_size.y / 8 });
+	bg.position = {
+		ctx.screen_size.x / 9 / PIXEL_PER_UNIT,
+		-(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT
+			+ height_road
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/warrior2.png",
+		{ ctx.screen_size.x / 10, ctx.screen_size.y / 6 });
+	bg.position = {
+		0,
+		(ctx.screen_size.y / 10 + bg.render.height / 2) / PIXEL_PER_UNIT
+			+ height_black / 2
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/archer.png",
+		{ ctx.screen_size.x / 9, ctx.screen_size.y / 7 });
+	bg.position = {
+		ctx.screen_size.x / 5 / PIXEL_PER_UNIT,
+		(ctx.screen_size.y / 10 + bg.render.height / 2) / PIXEL_PER_UNIT
+			+ height_black / 2
+	};
+	game_scene.push_back(bg);
+
+
+	bg.render = Render(ctx, "Assets/you.png",
+		{ ctx.screen_size.x / 15, ctx.screen_size.y / 25 });
+	bg.position = {
+		ctx.screen_size.x / 9 / PIXEL_PER_UNIT,
+		-ctx.screen_size.y / 5 / PIXEL_PER_UNIT
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/arrow.png",
+		{ ctx.screen_size.x / 15, ctx.screen_size.y / 12 });
+	bg.position = {
+		ctx.screen_size.x / 9 / PIXEL_PER_UNIT,
+		-ctx.screen_size.y / 4 / PIXEL_PER_UNIT
+	};
+	game_scene.push_back(bg);
+
+
+	bg.render = Render(ctx, "Assets/demon1_left.png",
+		{ ctx.screen_size.x / 5, ctx.screen_size.y / 4 });
+	bg.position = {
+		-(ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT,
+		(ctx.screen_size.y / 4 - bg.render.height / 2) / PIXEL_PER_UNIT
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/demon1_right.png",
+		{ ctx.screen_size.x / 5, ctx.screen_size.y / 6 });
+	bg.position = {
+		(ctx.screen_size.x - bg.render.width) / 2 / PIXEL_PER_UNIT,
+		(ctx.screen_size.y / 3 - bg.render.height / 2) / PIXEL_PER_UNIT
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/demon1_attack.png",
+		{ ctx.screen_size.x / 3, ctx.screen_size.y / 3 });
+	bg.position = {
+		-ctx.screen_size.x / 8 / PIXEL_PER_UNIT,
+		-(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT
+			+ height_road
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/demon2_attack.png",
+		{ ctx.screen_size.x / 6, ctx.screen_size.y / 4 });
+	bg.position = {
+		-ctx.screen_size.x / 6 / PIXEL_PER_UNIT,
+		(ctx.screen_size.y / 10 + bg.render.height / 2)
+			/ PIXEL_PER_UNIT + height_black / 2
+	};
+	game_scene.push_back(bg);
+
+	bg.render = Render(ctx, "Assets/wizard(bad).png",
+		{ ctx.screen_size.x / 9, ctx.screen_size.y / 4 });
+	bg.position = {
+		-(ctx.screen_size.x) / 3 / PIXEL_PER_UNIT,
+		-(ctx.screen_size.y - bg.render.height) / 2 / PIXEL_PER_UNIT
+			+ height_cliff
+	};
+	game_scene.push_back(bg);
 }
 
 // Задание DrawStatus.
@@ -623,4 +870,35 @@ void ConstructMenuScene(Context &ctx, Scene &game_scene)
 //
 void DrawStatus(Context &ctx)
 {
+    Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
+    int int_min = ctx.time / 60000;
+    int int_sec = (ctx.time / 1000) - int_min*60;
+    int rectanglposX = ctx.screen_size.x-60;
+    int rectanglewidth = 60;
+    int score_rectw = 82;
+
+    if (int_min > 9)
+    {
+        rectanglposX -= 5;
+        rectanglewidth += 5;
+    }
+
+    if (ctx.score >= 10)
+        score_rectw += 10;
+    if (ctx.score >= 100)
+        score_rectw += 10;
+
+    DrawRectangle(37, 0, score_rectw, 25, BLACK);
+    DrawRectangle(rectanglposX, 0, rectanglewidth, 25, BLACK);
+    std::string time = std::to_string(int_min) + ':' + std::to_string(int_sec);
+    std::string score = "Score:" + std::to_string(ctx.score);
+    DrawText(score, 40, 5, 20, BLUE);
+    DrawText(time, ctx.screen_size.x-55, 5, 20, BLUE);
+
+    int heartposY = 5;
+    for(int i = 0;i < ctx.lives;i++)
+    {
+        DrawTexture(heart_texture, 5, heartposY, WHITE);
+        heartposY += 30;
+    }
 }
